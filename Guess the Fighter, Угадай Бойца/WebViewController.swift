@@ -23,8 +23,8 @@ class WebViewController: UIViewController {
         self.titleLabel.text = self.currentTitle
         
         self.link = "https://www.youtube.com/watch?v=Y92Eppp8GDo"
-        let url = NSURL (string: link)
-        let requestObj = NSURLRequest(URL: url!)
+        let url = URL (string: link)
+        let requestObj = URLRequest(url: url!)
         webView.loadRequest(requestObj)
         
         // Do any additional setup after loading the view.
@@ -35,18 +35,18 @@ class WebViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    @IBAction func forwardButton(sender: UIButton) {
+    @IBAction func forwardButton(_ sender: UIButton) {
         self.webView.goForward()
     }
-    @IBAction func backButton(sender: UIButton) {
+    @IBAction func backButton(_ sender: UIButton) {
         self.webView.goBack()
     }
     
-    @IBAction func stopButton(sender: UIButton) {
+    @IBAction func stopButton(_ sender: UIButton) {
         self.webView.stopLoading()
     }
     
-    @IBAction func refreshButton(sender: UIButton) {
+    @IBAction func refreshButton(_ sender: UIButton) {
         self.webView.reload()
     }
     

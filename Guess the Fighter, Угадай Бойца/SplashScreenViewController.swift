@@ -20,8 +20,8 @@ class SplashScreenViewController: UIViewController {
 
         let splashScreenTime = 3
         let triggerTime = (Int64(NSEC_PER_SEC) * Int64(splashScreenTime))
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, triggerTime), dispatch_get_main_queue(), { () -> Void in
-            self.performSegueWithIdentifier("showStartScreen", sender: nil)
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(triggerTime) / Double(NSEC_PER_SEC), execute: { () -> Void in
+            self.performSegue(withIdentifier: "showStartScreen", sender: nil)
         })
 
         // Do any additional setup after loading the view.

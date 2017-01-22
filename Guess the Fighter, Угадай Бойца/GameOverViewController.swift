@@ -20,7 +20,7 @@ class GameOverViewController: UIViewController {
         super.viewDidLoad()
         
         ///dlya togo chtobi gradient menyal orientaciyu pri izmenenii raskladki
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(QuestionViewController.rotated), name: UIDeviceOrientationDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(QuestionViewController.rotated), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
         
         //newHighScoreAnimation()
         
@@ -29,7 +29,7 @@ class GameOverViewController: UIViewController {
         
         
         gradient = CAGradientLayer()
-        gradient.colors = [UIColor.blueColor().CGColor, UIColor.redColor().CGColor]
+        gradient.colors = [UIColor.blue.cgColor, UIColor.red.cgColor]
         //gradient.colors = [UIColor.blueColor().CGColor, UIColor.redColor().CGColor, UIColor.blueColor().CGColor]
         gradient.locations  = [0.0, 1.0]
         //gradient.locations = [0.0 , 0.5, 1.0]
@@ -47,14 +47,14 @@ class GameOverViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    @IBAction func retryButtonHandler(sender: UIButton) {
+    @IBAction func retryButtonHandler(_ sender: UIButton) {
         theGameController.playSound("CLICK")
         theGameController.restartGame()
     }
     
-    @IBAction func mainMenuButtonHandler(sender: UIButton) {
+    @IBAction func mainMenuButtonHandler(_ sender: UIButton) {
         theGameController.playSound("CLICK")
-        performSegueWithIdentifier("showMainMenu", sender: nil)
+        performSegue(withIdentifier: "showMainMenu", sender: nil)
     }
     
     func newHighScoreAnimation() {
@@ -64,13 +64,13 @@ class GameOverViewController: UIViewController {
     ///dlya togo chtobi gradient menyal orientaciyu pri izmenenii raskladki
     func rotated()
     {
-        if(UIDeviceOrientationIsLandscape(UIDevice.currentDevice().orientation))
+        if(UIDeviceOrientationIsLandscape(UIDevice.current.orientation))
         {
             //print("landscape")
             ifOrientChanged()
         }
         
-        if(UIDeviceOrientationIsPortrait(UIDevice.currentDevice().orientation))
+        if(UIDeviceOrientationIsPortrait(UIDevice.current.orientation))
         {
             //print("Portrait")
             ifOrientChanged()
@@ -78,7 +78,7 @@ class GameOverViewController: UIViewController {
         
     }
     
-    private func ifOrientChanged() {
+    fileprivate func ifOrientChanged() {
         gradient.frame = self.view.bounds
     }
 

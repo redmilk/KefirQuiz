@@ -18,10 +18,10 @@ class GameDoneViewController: UIViewController {
         super.viewDidLoad()
         
         ///dlya togo chtobi gradient menyal orientaciyu pri izmenenii raskladki
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(QuestionViewController.rotated), name: UIDeviceOrientationDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(QuestionViewController.rotated), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
 
         gradient = CAGradientLayer()
-        gradient.colors = [UIColor.blueColor().CGColor, UIColor.redColor().CGColor, UIColor.blueColor().CGColor]
+        gradient.colors = [UIColor.blue.cgColor, UIColor.red.cgColor, UIColor.blue.cgColor]
         gradient.locations = [0.0 , 0.5, 1.0]
         gradient.startPoint = CGPoint(x: 0.0, y: 1.0)
         gradient.endPoint = CGPoint(x: 1.0, y: 1.0)
@@ -39,19 +39,19 @@ class GameDoneViewController: UIViewController {
     
     @IBAction func giftButtonHandler() {
         theGameController.playSound("CLICK")
-        performSegueWithIdentifier("showMainMenu", sender: nil)
+        performSegue(withIdentifier: "showMainMenu", sender: nil)
     }
     
     ///dlya togo chtobi gradient menyal orientaciyu pri izmenenii raskladki
     func rotated()
     {
-        if(UIDeviceOrientationIsLandscape(UIDevice.currentDevice().orientation))
+        if(UIDeviceOrientationIsLandscape(UIDevice.current.orientation))
         {
             //print("landscape")
             ifOrientChanged()
         }
         
-        if(UIDeviceOrientationIsPortrait(UIDevice.currentDevice().orientation))
+        if(UIDeviceOrientationIsPortrait(UIDevice.current.orientation))
         {
             //print("Portrait")
             ifOrientChanged()
@@ -59,7 +59,7 @@ class GameDoneViewController: UIViewController {
         
     }
     
-    private func ifOrientChanged() {
+    fileprivate func ifOrientChanged() {
         gradient.frame = self.view.bounds
     }
 

@@ -12,7 +12,7 @@
 
 import UIKit
 
-func setupGradient(layerAttachTo: CALayer, frame: CGRect, gradient: CAGradientLayer, colors: [CGColor], locations: [NSNumber], startPoint: CGPoint, endPoint: CGPoint, zPosition: Float) {
+func setupGradient(_ layerAttachTo: CALayer, frame: CGRect, gradient: CAGradientLayer, colors: [CGColor], locations: [NSNumber], startPoint: CGPoint, endPoint: CGPoint, zPosition: Float) {
     
     gradient.frame = frame
     gradient.colors = colors
@@ -67,7 +67,7 @@ class QuestionViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         
         
         ///dlya togo chtobi gradient menyal orientaciyu pri izmenenii raskladki
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(QuestionViewController.rotated), name: UIDeviceOrientationDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(QuestionViewController.rotated), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
         
         phrases = ["Yes!", "Exactly!", "Well Done!", "Okay!", "Fine!", "Right!", "True!",]
         
@@ -81,7 +81,7 @@ class QuestionViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         self.congratuLationStripAndAnswerButtonsConstraintsInit()
         theGameController.startGame()
     }
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         ///start animations here
         self.gradientBackgroundColorAnimation()
         self.gradientBackgroundChangePositionAnimation()
@@ -89,7 +89,7 @@ class QuestionViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         /// First image init
         setNewImage(theGameController.currentFighter.image)
     }
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -97,45 +97,45 @@ class QuestionViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     ///dlya togo chtobi gradient menyal orientaciyu pri izmenenii raskladki
     func rotated() {
-        if(UIDeviceOrientationIsLandscape(UIDevice.currentDevice().orientation)) {
+        if(UIDeviceOrientationIsLandscape(UIDevice.current.orientation)) {
             //print("landscape")
             ifOrientChanged()
         }
-        if(UIDeviceOrientationIsPortrait(UIDevice.currentDevice().orientation)) {
+        if(UIDeviceOrientationIsPortrait(UIDevice.current.orientation)) {
             //print("Portrait")
             ifOrientChanged()
         }
     }
     
-    private func ifOrientChanged() {
+    fileprivate func ifOrientChanged() {
         gradient.frame = mainView.bounds
     }
     
     
     ///////////////////////// PICKER VIEW DELEGATE//////////////// PICKER VIEW DELEGATE//////////////////
     
-    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
     
-    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return theGameController.answerListCount
     }
-    func pickerView(pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusingView view: UIView?) -> UIView {
+    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
         let pickerLabel = UILabel()
         let title: String!
         title = theGameController.currentAnswerListData[row]
         ///picker rows color and text
-        let thetitle = NSAttributedString(string: title, attributes: [NSFontAttributeName:UIFont(name: "PingFangTC-Thin", size: 22.0)!,NSForegroundColorAttributeName:UIColor.whiteColor()])
+        let thetitle = NSAttributedString(string: title, attributes: [NSFontAttributeName:UIFont(name: "PingFangTC-Thin", size: 22.0)!,NSForegroundColorAttributeName:UIColor.white])
         //let hue = CGFloat(1.0 / CGFloat(row))
         pickerLabel.backgroundColor = UIColor(hue: CGFloat(0.7), saturation: 1.0, brightness: 1.0, alpha: 0.65)
         //pickerLabel.backgroundColor = UIColor(hue: hue, saturation: 1.0, brightness: 1.0, alpha: 0.65)
-        pickerLabel.textAlignment = .Center
+        pickerLabel.textAlignment = .center
         pickerLabel.attributedText = thetitle
         return pickerLabel
         
     }
-    func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         
         if self.isBetweenQuestions == true {
             return
@@ -146,7 +146,7 @@ class QuestionViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
             
         }
         
-        let cubeAnimationTransitionDirection: AnimationDirection = (row > self.currentRowIndex) ? .Positive : .Negative
+        let cubeAnimationTransitionDirection: AnimationDirection = (row > self.currentRowIndex) ? .positive : .negative
         
         self.currentSelectedAnswer = theGameController.currentAnswerListData[row]
 
@@ -159,26 +159,14 @@ class QuestionViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         
     }
     
-    ////////////////////// ANIMATION DELEGATE ///////////////////////////////////////////////////////////
-    
-    override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
-        if let name = anim.valueForKey("name") as? String {
-            if name == "seekLocation" {
-                ///somnitelno
-                self.gradient.locations = [0.0, self.picker.selectedRowInComponent(0)/5, 1.0]
-                
-            }
-        }
-    }
-    
     // //////////////////////////////////////////// CUSTOM FUNCTIONS ///////////////////////////////////////
     
-    func refreshCurrentFighterNameLabel(newLabelText: String) {
+    func refreshCurrentFighterNameLabel(_ newLabelText: String) {
         self.fighterNameLabel.text = newLabelText
     }
     
     
-    func refreshCurrentFighterNameLabelWithAnimation(newLabelText: String, animationDirection: AnimationDirection) {
+    func refreshCurrentFighterNameLabelWithAnimation(_ newLabelText: String, animationDirection: AnimationDirection) {
         
         self.fighterNameLabel.text = newLabelText
         cubeTransition(label: self.fighterNameLabel, text: newLabelText, direction: animationDirection)
@@ -187,12 +175,12 @@ class QuestionViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     ///// CUBE TRANSITION ANIMATION ////// ///// ///// /////
     
     enum AnimationDirection: Int {
-        case Positive = 1
-        case Negative = -1
+        case positive = 1
+        case negative = -1
     }
     
     // anim changing fighter title label with cube transition
-    func cubeTransition(label label: UILabel, text: String, direction: AnimationDirection) {
+    func cubeTransition(label: UILabel, text: String, direction: AnimationDirection) {
         
         let auxLabel = UILabel(frame: label.frame)
         auxLabel.text = text
@@ -200,25 +188,21 @@ class QuestionViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         auxLabel.textAlignment = label.textAlignment
         auxLabel.textColor = label.textColor
         auxLabel.backgroundColor = label.backgroundColor
-        auxLabel.lineBreakMode = .ByClipping
+        auxLabel.lineBreakMode = .byClipping
         
         let auxLabelOffset = CGFloat(direction.rawValue) *
             label.frame.size.height/2.0
         
-        auxLabel.transform = CGAffineTransformConcat(
-            CGAffineTransformMakeScale(1.0, 0.1),
-            CGAffineTransformMakeTranslation(0.0, auxLabelOffset))
+        auxLabel.transform = CGAffineTransform(scaleX: 1.0, y: 0.1).concatenating(CGAffineTransform(translationX: 0.0, y: auxLabelOffset))
         
         label.superview!.addSubview(auxLabel)
                                     ///
-        UIView.animateWithDuration(0.2, delay: 0.0, options: .CurveEaseOut, animations: {
-            auxLabel.transform = CGAffineTransformIdentity
-            label.transform = CGAffineTransformConcat(
-                CGAffineTransformMakeScale(1.0, 0.1),
-                CGAffineTransformMakeTranslation(0.0, -auxLabelOffset))
+        UIView.animate(withDuration: 0.2, delay: 0.0, options: .curveEaseOut, animations: {
+            auxLabel.transform = CGAffineTransform.identity
+            label.transform = CGAffineTransform(scaleX: 1.0, y: 0.1).concatenating(CGAffineTransform(translationX: 0.0, y: -auxLabelOffset))
             }, completion: {_ in
                 label.text = auxLabel.text
-                label.transform = CGAffineTransformIdentity
+                label.transform = CGAffineTransform.identity
                 
                 auxLabel.removeFromSuperview()
         })
@@ -227,24 +211,24 @@ class QuestionViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     /////   /////   //////  /////// //////  ////
     
-    func doSegueWithIdentifier(identif: String)
+    func doSegueWithIdentifier(_ identif: String)
     {
-        performSegueWithIdentifier(identif, sender: nil)
+        performSegue(withIdentifier: identif, sender: nil)
     }
     
     ///parametr lishniy         ///GRADIENT COLOR CHANGE IF WRONG
-    func backGroundColorChangeAnimationOnAnswer(playerAnswerResult: String) {
+    func backGroundColorChangeAnimationOnAnswer(_ playerAnswerResult: String) {
         ///ne ispulzuetsya potomu chto dinamichniy zadniy background ne pozvolyaet eto, tak chto return
         ///eshe odin horoshiy variant pri oshibke, gradient menyaetsya na protivopolozhniy po simmetrii
         return  ///////////// Testing
         let anim = CABasicAnimation(keyPath: "colors")
-        anim.toValue = [UIColor.blueColor().CGColor, UIColor.redColor().CGColor, UIColor.blueColor().CGColor]
-        anim.fromValue = [UIColor.redColor().CGColor, UIColor.redColor().CGColor, UIColor.redColor().CGColor]
+        anim.toValue = [UIColor.blue.cgColor, UIColor.red.cgColor, UIColor.blue.cgColor]
+        anim.fromValue = [UIColor.red.cgColor, UIColor.red.cgColor, UIColor.red.cgColor]
         anim.duration = 1.5
         anim.repeatCount = 1
         anim.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
         
-        self.gradient.addAnimation(anim, forKey: nil)
+        self.gradient.add(anim, forKey: nil)
         
         /// Predidushiy variant animacii pri oshibke v otvete. bckr s krasnogo na siniy
         
@@ -269,8 +253,8 @@ class QuestionViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         
         let anim = CABasicAnimation(keyPath: "colors")
         ///1.
-        anim.fromValue = [UIColor.blueColor().CGColor, UIColor.greenColor().CGColor, UIColor.blueColor().CGColor]
-        anim.toValue = [UIColor.blueColor().CGColor, UIColor.redColor().CGColor, UIColor.blueColor().CGColor]
+        anim.fromValue = [UIColor.blue.cgColor, UIColor.green.cgColor, UIColor.blue.cgColor]
+        anim.toValue = [UIColor.blue.cgColor, UIColor.red.cgColor, UIColor.blue.cgColor]
         
         //anim.fromValue = [UIColor.blueColor().CGColor, UIColor.redColor().CGColor, UIColor.blueColor().CGColor]
         //anim.toValue = [UIColor.redColor().CGColor, UIColor.blueColor().CGColor, UIColor.redColor().CGColor]
@@ -280,7 +264,7 @@ class QuestionViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         anim.autoreverses = true
         anim.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
         
-        self.gradient.addAnimation(anim, forKey: nil)
+        self.gradient.add(anim, forKey: nil)
     }
     
     func gradientBackgroundChangePositionAnimation() {
@@ -291,38 +275,39 @@ class QuestionViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         //anim.autoreverses = true
         anim.repeatCount = Float.infinity
         anim.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
-        self.gradient.addAnimation(anim, forKey: nil)
+        self.gradient.add(anim, forKey: nil)
     }
     
     
     ////// ANSWER BUTTON TITTLE SET ...
     
-    func answerButtonSetState(state: String) {
+    func answerButtonSetState(_ state: String) {
+        
         if theGameController.gameIsOver == true {
             return
         }
         switch state {
         case "OPEN":
-            UIView.animateWithDuration(0.8, delay: 0.0, usingSpringWithDamping: 0.4, initialSpringVelocity: 0.7, options: [], animations: {
-                if self.answerStripOpenConstraint.active == false {
-                    self.answerStripOpenConstraint.active = true
-                    self.answerStripCloseConstraint.active = false
+            UIView.animate(withDuration: 0.8, delay: 0.0, usingSpringWithDamping: 0.4, initialSpringVelocity: 0.7, options: [], animations: {
+                if self.answerStripOpenConstraint.isActive == false {
+                    self.answerStripOpenConstraint.isActive = true
+                    self.answerStripCloseConstraint.isActive = false
                 }
                 self.view.layoutIfNeeded()          ///      ///       ///     ///
                 // //////////////////////////////lllllllllllllllllllllllllllllll//
-                self.answerButton.setTitle("NEXT", forState: .Normal)
+                self.answerButton.setTitle("NEXT", for: UIControlState())
                 }, completion: { _ in
             })
             
             break
         case "CLOSE":
-            UIView.animateWithDuration(0.8, delay: 0.0, usingSpringWithDamping: 0.4, initialSpringVelocity: 0.7, options: [], animations: {
-                if self.answerStripCloseConstraint.active == false {
-                    self.answerStripCloseConstraint.active = true
-                    self.answerStripOpenConstraint.active = false
+            UIView.animate(withDuration: 0.8, delay: 0.0, usingSpringWithDamping: 0.4, initialSpringVelocity: 0.7, options: [], animations: {
+                if self.answerStripCloseConstraint.isActive == false {
+                    self.answerStripCloseConstraint.isActive = true
+                    self.answerStripOpenConstraint.isActive = false
                 }
                 self.view.layoutIfNeeded()
-                self.answerButton.setTitle("", forState: .Normal)
+                self.answerButton.setTitle("", for: UIControlState())
                 }, completion: { _ in
             })
             break
@@ -332,17 +317,17 @@ class QuestionViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         
     }
     
-    func congratStripSetState(state: String) {
+    func congratStripSetState(_ state: String) {
         if theGameController.gameIsOver == true {
             return
         }
         self.setRandomPhrase() /// SET RAAAANDOM PHRASEEEE
         switch state {
         case "OPEN":
-            UIView.animateWithDuration(2.0, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.2, options: [.CurveEaseInOut], animations: {
-                if self.congratStripCloseConstraint.active == true {
-                    self.congratStripCloseConstraint.active = false
-                    self.congratStripOpenConstraint.active = true
+            UIView.animate(withDuration: 2.0, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.2, options: UIViewAnimationOptions(), animations: {
+                if self.congratStripCloseConstraint.isActive == true {
+                    self.congratStripCloseConstraint.isActive = false
+                    self.congratStripOpenConstraint.isActive = true
                 }
                 self.view.layoutIfNeeded()
                 
@@ -350,10 +335,10 @@ class QuestionViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
             
             break
         case "CLOSE":
-            UIView.animateWithDuration(2.0, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.2, options: [.CurveEaseInOut], animations: {
-                if self.congratStripOpenConstraint.active == true {
-                    self.congratStripOpenConstraint.active = false
-                    self.congratStripCloseConstraint.active = true
+            UIView.animate(withDuration: 2.0, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.2, options: UIViewAnimationOptions(), animations: {
+                if self.congratStripOpenConstraint.isActive == true {
+                    self.congratStripOpenConstraint.isActive = false
+                    self.congratStripCloseConstraint.isActive = true
                 }
                 self.view.layoutIfNeeded()
                 
@@ -367,7 +352,7 @@ class QuestionViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     
     
-    func changeFighterImageWithAnimation(toImage: UIImage) {
+    func changeFighterImageWithAnimation(_ toImage: UIImage) {
         
         if theGameController.gameIsOver == true {
             return
@@ -383,7 +368,7 @@ class QuestionViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         anim.duration = anim.settlingDuration
         anim.fromValue = pos - 300
         anim.toValue = pos
-        self.imageView.layer.addAnimation(anim, forKey: nil)
+        self.imageView.layer.add(anim, forKey: nil)
     }
     
     
@@ -399,20 +384,20 @@ class QuestionViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         animMove.duration = animMove.settlingDuration
         animMove.damping = 8.0
         
-        self.fighterNameLabel.layer.addAnimation(animMove, forKey: nil)
+        self.fighterNameLabel.layer.add(animMove, forKey: nil)
     }
     
     func pickerSelectMiddleOption() {
         let index: Int = Int(theGameController.answerListCount/2)
         picker.selectRow(index, inComponent: 0, animated: true)
-        self.currentSelectedAnswer = theGameController.currentAnswerListData[picker.selectedRowInComponent(0)]
+        self.currentSelectedAnswer = theGameController.currentAnswerListData[picker.selectedRow(inComponent: 0)]
     }
     
     func reloadPickerView() {
         self.picker.reloadAllComponents()
     }
     
-    func setNewImage(imageName: String) {
+    func setNewImage(_ imageName: String) {
         if theGameController != nil {
             theGameController.playSound("CHANGEIMAGE")
         }
@@ -426,14 +411,14 @@ class QuestionViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         self.signX[1].image = UIImage(named: "singleDot")
         self.signX[0].image = UIImage(named: "singleDot")
         
-        self.signX[2].transform = CGAffineTransformIdentity
-        self.signX[2].transform = CGAffineTransformIdentity
-        self.signX[2].transform = CGAffineTransformIdentity
+        self.signX[2].transform = CGAffineTransform.identity
+        self.signX[2].transform = CGAffineTransform.identity
+        self.signX[2].transform = CGAffineTransform.identity
     }
     
     func congratStripConstraintsSetToClose() {
-        self.congratStripOpenConstraint.active = false
-        self.congratStripCloseConstraint.active = true
+        self.congratStripOpenConstraint.isActive = false
+        self.congratStripCloseConstraint.isActive = true
     }
     
     func changeXtoDot() {
@@ -444,30 +429,30 @@ class QuestionViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         switch (theGameController.triesLeft) {
         case 2:
             
-            UIView.animateWithDuration(0.2, delay: 0.0, options: [], animations: {
+            UIView.animate(withDuration: 0.2, delay: 0.0, options: [], animations: {
                 self.signX[2].center.y -= self.view.bounds.height / 5
                 }, completion: { _ in
                     self.signX[2].image = UIImage(named: "X1")
-                    UIView.animateWithDuration(0.3, delay: 0.1, usingSpringWithDamping: 0.2, initialSpringVelocity: 0.8, options: [], animations: {
+                    UIView.animate(withDuration: 0.3, delay: 0.1, usingSpringWithDamping: 0.2, initialSpringVelocity: 0.8, options: [], animations: {
                         self.signX[2].center.y += self.view.bounds.height / 5
                         }, completion: nil)
             })
             break
         case 1:
-            UIView.animateWithDuration(0.2, delay: 0.0, options: [], animations: {
+            UIView.animate(withDuration: 0.2, delay: 0.0, options: [], animations: {
                 self.signX[1].center.y -= self.view.bounds.height / 5
                 }, completion: { _ in
-                    UIView.animateWithDuration(0.3, delay: 0.1, usingSpringWithDamping: 0.2, initialSpringVelocity: 0.8, options: [], animations: {
+                    UIView.animate(withDuration: 0.3, delay: 0.1, usingSpringWithDamping: 0.2, initialSpringVelocity: 0.8, options: [], animations: {
                         self.signX[1].image = UIImage(named: "X1")
                         self.signX[1].center.y += self.view.bounds.height / 5
                         }, completion: nil)
             })
             break
         case 0:
-            UIView.animateWithDuration(0.2, delay: 0.0, options: [], animations: {
+            UIView.animate(withDuration: 0.2, delay: 0.0, options: [], animations: {
                 self.signX[0].center.y -= self.view.bounds.height / 5
                 }, completion: { _ in
-                    UIView.animateWithDuration(0.3, delay: 0.1, usingSpringWithDamping: 0.2, initialSpringVelocity: 0.8, options: [], animations: {
+                    UIView.animate(withDuration: 0.3, delay: 0.1, usingSpringWithDamping: 0.2, initialSpringVelocity: 0.8, options: [], animations: {
                         self.signX[0].image = UIImage(named: "X1")
                         self.signX[0].center.y += self.view.bounds.height / 5
                         }, completion: nil)
@@ -479,19 +464,19 @@ class QuestionViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     
     func answerButtonAnimationIfWrongForGradients() {
-        self.answerButton.backgroundColor = UIColor.redColor()
+        self.answerButton.backgroundColor = UIColor.red
         self.answerButton.center.y -= self.answerButton.bounds.height
-        UIView.animateWithDuration(1.0, animations: {
-            self.answerButton.backgroundColor = UIColor.clearColor()
+        UIView.animate(withDuration: 1.0, animations: {
+            self.answerButton.backgroundColor = UIColor.clear
             self.answerButton.center.y += self.answerButton.bounds.height
             }, completion: nil)
     }
     
     func answerButtonAnimationIfRightForGradients() {
-        self.answerButton.backgroundColor = UIColor.greenColor()
+        self.answerButton.backgroundColor = UIColor.green
         //self.answerButton.center.y -= self.answerButton.bounds.height
-        UIView.animateWithDuration(1.0, animations: {
-            self.answerButton.backgroundColor = UIColor.clearColor()
+        UIView.animate(withDuration: 1.0, animations: {
+            self.answerButton.backgroundColor = UIColor.clear
             // self.answerButton.center.y += self.answerButton.bounds.height
             }, completion: nil)
     }
@@ -506,13 +491,13 @@ class QuestionViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         anim.duration = anim.settlingDuration
         anim.fromValue = 1.2
         anim.toValue = 1.0
-        self.answerButton.layer.addAnimation(anim, forKey: nil)
+        self.answerButton.layer.add(anim, forKey: nil)
     }
     
     
     ////////////////////////////// ANSWER BUTTON HANDLER /////////////////////// HANDLERS ////////////////
     
-    @IBAction func answerButton(sender: UIButton) {
+    @IBAction func answerButton(_ sender: UIButton) {
         ///zdes refresh chtob esli picker sovpal s kartinkoi i pri nazhatii tak i ostayutsya znaki voprosov na leible, t.k. picker ne smeshyalsya i label ne obnovlyalsya
         self.disablePressAnswerButtonForTime()
         self.isBetweenQuestions = true
@@ -526,15 +511,15 @@ class QuestionViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         self.disablePressAnswerButtonForTime()
     }
     
-    @IBAction func returnToQuestionViewController(segue: UIStoryboardSegue) {
+    @IBAction func returnToQuestionViewController(_ segue: UIStoryboardSegue) {
         
     }
     
     func disablePressAnswerButtonForTime () {
-        self.answerButton.userInteractionEnabled = false
+        self.answerButton.isUserInteractionEnabled = false
         let triggerTime = (Int64(NSEC_PER_SEC) * Int64(1))
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, triggerTime), dispatch_get_main_queue(), { () -> Void in
-            self.answerButton.userInteractionEnabled = true
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(triggerTime) / Double(NSEC_PER_SEC), execute: { () -> Void in
+            self.answerButton.isUserInteractionEnabled = true
         })
     }
     
@@ -546,16 +531,16 @@ class QuestionViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         gradient.frame = newFrame
         gradient.zPosition = -10
         gradient.colors = [
-            UIColor.whiteColor().CGColor,
-            UIColor.blueColor().CGColor
+            UIColor.white.cgColor,
+            UIColor.blue.cgColor
         ]
         
         /* repeat the central location to have solid colors */
         gradient.locations = [0, 1.0]
         
         /* make it horizontal */
-        gradient.startPoint = CGPointMake(0, 1.0)
-        gradient.endPoint = CGPointMake(1, 1)
+        gradient.startPoint = CGPoint(x: 0, y: 1.0)
+        gradient.endPoint = CGPoint(x: 1, y: 1)
         
         self.answerButton.layer.addSublayer(gradient)
     }
@@ -563,7 +548,7 @@ class QuestionViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     func selfBackgroundGradientLayerSetup() {
         gradient = CAGradientLayer()
-        gradient.colors = [UIColor.blueColor().CGColor, UIColor.redColor().CGColor, UIColor.blueColor().CGColor]
+        gradient.colors = [UIColor.blue.cgColor, UIColor.red.cgColor, UIColor.blue.cgColor]
         gradient.locations = [0.0, 0.0, 0.25]
         gradient.startPoint = CGPoint(x: 0.0, y: 1.2)
         gradient.endPoint = CGPoint(x: 1.0, y: 0.8)
@@ -576,16 +561,16 @@ class QuestionViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     
     func congratuLationStripAndAnswerButtonsConstraintsInit() {
-        congratStripOpenConstraint = NSLayoutConstraint(item: congratStrip, attribute: .Height, relatedBy: .Equal, toItem: imageView, attribute: .Height, multiplier: 0.3, constant: 0.0) /// wtf 0.3 a ne 0.2
+        congratStripOpenConstraint = NSLayoutConstraint(item: congratStrip, attribute: .height, relatedBy: .equal, toItem: imageView, attribute: .height, multiplier: 0.3, constant: 0.0) /// wtf 0.3 a ne 0.2
         
-        congratStripCloseConstraint = NSLayoutConstraint(item: congratStrip, attribute: .Height, relatedBy: .Equal, toItem: imageView, attribute: .Height, multiplier: 0.0, constant: 0.0)
+        congratStripCloseConstraint = NSLayoutConstraint(item: congratStrip, attribute: .height, relatedBy: .equal, toItem: imageView, attribute: .height, multiplier: 0.0, constant: 0.0)
         
-        answerStripOpenConstraint = NSLayoutConstraint(item: answerButton, attribute: .Height, relatedBy: .Equal, toItem: imageView, attribute: .Height, multiplier: 0.2, constant: 0.0)
+        answerStripOpenConstraint = NSLayoutConstraint(item: answerButton, attribute: .height, relatedBy: .equal, toItem: imageView, attribute: .height, multiplier: 0.2, constant: 0.0)
         
-        answerStripCloseConstraint = NSLayoutConstraint(item: answerButton, attribute: .Height, relatedBy: .Equal, toItem: imageView, attribute: .Height, multiplier: 0.0, constant: 0.0)
+        answerStripCloseConstraint = NSLayoutConstraint(item: answerButton, attribute: .height, relatedBy: .equal, toItem: imageView, attribute: .height, multiplier: 0.0, constant: 0.0)
         
-        congratStripCloseConstraint.active = true
-        answerStripOpenConstraint.active = true
+        congratStripCloseConstraint.isActive = true
+        answerStripOpenConstraint.isActive = true
     }
     
     func setRandomPhrase() {
@@ -598,7 +583,7 @@ class QuestionViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         anim.fromValue = 1.0
         anim.toValue = 0.0
         anim.duration = 1.0
-        self.imageView.layer.addAnimation(anim, forKey: nil)
+        self.imageView.layer.add(anim, forKey: nil)
         
         
     }

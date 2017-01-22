@@ -16,7 +16,7 @@ var highScore: Int!
 var theGameController: GameController!
 
 class GameController {
-    private var fighters: [Fighter] = [Fighter]()
+    fileprivate var fighters: [Fighter] = [Fighter]()
     
     var currentFighter: Fighter!
     var triesLeft: Int = 3
@@ -116,7 +116,7 @@ class GameController {
         self.currentRightAnswerIndex = generateRightAnswer()
         /// PAUZA MEZHDU VOPROSAMI, ZADERZHKA DO OBNOVLENIYA PICKERA
         let triggerTime = (Int64(NSEC_PER_SEC) * Int64(1))
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, triggerTime), dispatch_get_main_queue(), { () -> Void in
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(triggerTime) / Double(NSEC_PER_SEC), execute: { () -> Void in
             qVController.reloadPickerView()
             qVController.pickerSelectMiddleOption()
         })
@@ -127,7 +127,7 @@ class GameController {
         self.score = 0
         self.gameIsOver = false
         self.isItFirstQuestion = true
-        self.fighters = self.fighters.shuffle()
+        self.fighters.shuffle()
         self.scoreLabel!.text = score.description
         qVController.resetDots()
     }
@@ -135,7 +135,7 @@ class GameController {
     /// igrok oshibsya, propustit tekushiy vopros s nebolshoi zaderzhkoi
     func playerWasWrongSkipThisQuestion() {
         let triggerTime = (Int64(NSEC_PER_SEC) * Int64(1))
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, triggerTime), dispatch_get_main_queue(), { () -> Void in
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(triggerTime) / Double(NSEC_PER_SEC), execute: { () -> Void in
             
             qVController.setNewImage(self.fighters[self.CURRENTQUESTIONINDEX].image)
             /// stavit centralnuyu v pickere opciyu vibora na sledushiy vopros
@@ -151,7 +151,7 @@ class GameController {
         qVController.answerButtonSetState("CLOSE")
         /// PAUZA MEZHDU VOPROSAMI
         let triggerTime = (Int64(NSEC_PER_SEC) * Int64(3))
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, triggerTime), dispatch_get_main_queue(), { () -> Void in
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(triggerTime) / Double(NSEC_PER_SEC), execute: { () -> Void in
             qVController.refreshCurrentFighterNameLabel("? ? ? ? ?")
             qVController.pickerSelectMiddleOption()
             qVController.congratStripSetState("CLOSE")
@@ -164,7 +164,7 @@ class GameController {
     
     //////////////////////////////// RIGHT OR WRONG /////////////////////////////////
     
-    func checkRightOrWrong(answer answer: String) -> Bool {
+    func checkRightOrWrong(answer: String) -> Bool {
         let result = self.currentFighter.name == answer
         if result == false {  ///  PLAYER WAS WRONG
             qVController.animateImageViewIfPlayerWrong()
@@ -204,10 +204,10 @@ class GameController {
     }
     
     /// CHECK IF GAME OVER
-    func checkForPlayerGameOver(delayToGameOverAnimation delayToGameOverAnimation: CFTimeInterval) {
+    func checkForPlayerGameOver(delayToGameOverAnimation: CFTimeInterval) {
         if self.triesLeft <= 0 {
             let triggerTime = (Int64(NSEC_PER_SEC) * Int64(delayToGameOverAnimation))
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, triggerTime), dispatch_get_main_queue(), { () -> Void in
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(triggerTime) / Double(NSEC_PER_SEC), execute: { () -> Void in
                 ///zapomnit polozhenie gradienta i zapustit ego animaciyu s togozhe momenta posle restarta
                 self.playSound("GAMEOVER")
                 self.checkIfHighScore(self.score)
@@ -233,7 +233,7 @@ class GameController {
     
     ////////////////// MY SHUFFLE FUNC ///////////////////////
     ///poluchit massiv sluchainih otvetov
-    func getRandomAnswers(howmany howmany: Int) -> [String] {
+    func getRandomAnswers(howmany: Int) -> [String] {
         var result = [String]()
         var randomFighterForAnswersList: Fighter!
         for _ in 1...howmany {
@@ -241,7 +241,7 @@ class GameController {
             randomFighterForAnswersList = self.fighters[rand]
             
             ///esli imya sluchainogo sovpadaet s nashim tekushim v igre ili takoi uzhe dobavlen v spisok otvetov
-            while randomFighterForAnswersList.name == self.currentFighter.name || result.contains({ $0 == randomFighterForAnswersList.name }) {
+            while randomFighterForAnswersList.name == self.currentFighter.name || result.contains(where: { $0 == randomFighterForAnswersList.name }) {
                 let rand = arc4random_uniform(UInt32(fighters.count))
                 randomFighterForAnswersList = self.fighters[Int(rand)]
             }
@@ -275,7 +275,7 @@ class GameController {
         qVController.doSegueWithIdentifier("showGameDone")
     }
     
-    func playSound(soundName: String) {
+    func playSound(_ soundName: String) {
         if self.soundMute == true {
             return
         }
@@ -313,7 +313,7 @@ class GameController {
         self.initGame()
     }
     
-    func checkIfHighScore(yourScore: Int) -> Bool {
+    func checkIfHighScore(_ yourScore: Int) -> Bool {
         var r: Bool = false
         if yourScore > self.highscore {
             self.highscore = yourScore
@@ -331,7 +331,7 @@ class GameController {
         self.score = 0
         self.gameIsOver = false
         self.isItFirstQuestion = true
-        self.fighters = self.fighters.shuffle()
+        self.fighters.shuffle()
         self.currentFighter = self.fighters[CURRENTQUESTIONINDEX]
         self.scoreLabel!.text = score.description
         self.currentAnswerListData = self.getRandomAnswers(howmany: answerListCount)

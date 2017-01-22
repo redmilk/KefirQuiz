@@ -29,7 +29,7 @@ class StartGameViewController: UIViewController {
     @IBOutlet weak var aboutButton: UIButton!
     
     @IBOutlet weak var fightersTriviaTitleLabel: UILabel!
-    private var soundMute: Bool = false
+    fileprivate var soundMute: Bool = false
     
     
     
@@ -44,10 +44,10 @@ class StartGameViewController: UIViewController {
         self.transparentLabel.text = "    Highscore: \(theGameController.highscore)        "
         
         ///dlya togo chtobi gradient menyal orientaciyu pri izmenenii raskladki
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(QuestionViewController.rotated), name: UIDeviceOrientationDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(QuestionViewController.rotated), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
         
         gradient = CAGradientLayer()
-        gradient.colors = [UIColor.blueColor().CGColor, UIColor.redColor().CGColor, UIColor.blueColor().CGColor]
+        gradient.colors = [UIColor.blue.cgColor, UIColor.red.cgColor, UIColor.blue.cgColor]
         gradient.locations = [0.0 , 0.5, 1.0]
         gradient.startPoint = CGPoint(x: 0.0, y: 0.6)
         gradient.endPoint = CGPoint(x: 1.0, y: 1.0)
@@ -69,16 +69,16 @@ class StartGameViewController: UIViewController {
     
     func gradientColorChangeAnimation() {
         let gradientAnimationColors = CABasicAnimation(keyPath: "colors")
-        gradientAnimationColors.fromValue = [UIColor.blueColor().CGColor, UIColor.redColor().CGColor, UIColor.blueColor().CGColor]
-        gradientAnimationColors.toValue = [UIColor.whiteColor().CGColor, UIColor.redColor().CGColor, UIColor.blackColor().CGColor]
+        gradientAnimationColors.fromValue = [UIColor.blue.cgColor, UIColor.red.cgColor, UIColor.blue.cgColor]
+        gradientAnimationColors.toValue = [UIColor.white.cgColor, UIColor.red.cgColor, UIColor.black.cgColor]
         gradientAnimationColors.duration = 10.0
         gradientAnimationColors.autoreverses = true
         gradientAnimationColors.repeatCount = Float.infinity
-        gradient.addAnimation(gradientAnimationColors, forKey: nil)
+        gradient.add(gradientAnimationColors, forKey: nil)
 
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         gradientColorChangeAnimation()
         initialButtonAnimation()
     }
@@ -88,48 +88,48 @@ class StartGameViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    @IBAction func startGameButtonHandler(sender: UIButton) {
+    @IBAction func startGameButtonHandler(_ sender: UIButton) {
         theGameController.playSound("CLICK")
     }
     
     ///dlya togo chtobi gradient menyal orientaciyu pri izmenenii raskladki
     func rotated() {
-        if(UIDeviceOrientationIsLandscape(UIDevice.currentDevice().orientation)) {
+        if(UIDeviceOrientationIsLandscape(UIDevice.current.orientation)) {
             //print("landscape")
             ifOrientChanged()
         }
-        if(UIDeviceOrientationIsPortrait(UIDevice.currentDevice().orientation)) {
+        if(UIDeviceOrientationIsPortrait(UIDevice.current.orientation)) {
             //print("Portrait")
             ifOrientChanged()
         }
     }
     
-    private func ifOrientChanged() {
+    fileprivate func ifOrientChanged() {
         gradient.frame = self.view.bounds
     }
 
-    @IBAction func moreGamesButtonHandler(sender: UIButton) {
+    @IBAction func moreGamesButtonHandler(_ sender: UIButton) {
         initialButtonAnimation()
     }
     
-    @IBAction func muteButtonHandler(sender: UIButton) {
+    @IBAction func muteButtonHandler(_ sender: UIButton) {
         theGameController.playSound("CLICK")
         self.soundMute = !self.soundMute
-        self.muteButton.backgroundColor = (self.soundMute == false) ? UIColor.blackColor() : UIColor.redColor()
+        self.muteButton.backgroundColor = (self.soundMute == false) ? UIColor.black : UIColor.red
         self.muteButtonAnimation(self.soundMute)
     }
     
-    func muteButtonAnimation(toRoundShape: Bool) {
+    func muteButtonAnimation(_ toRoundShape: Bool) {
         
         let anim = CABasicAnimation(keyPath: "cornerRadius")
         
         
-        UIView.animateWithDuration(0.5, animations: {
+        UIView.animate(withDuration: 0.5, animations: {
             self.muteButton.layer.cornerRadius = toRoundShape ? 0.25 : 1.0
             }, completion: nil)
     }
     
-    @IBAction func shareSheet(sender: AnyObject) {
+    @IBAction func shareSheet(_ sender: AnyObject) {
         
         let firstActivityItem = "Do you track fighting sports?  Come and try your knowledge in the FightersTrivia!  MMA, BOXING, K-1.  More than 200 fighters, free to play."
         ///let secondActivityItem : NSURL = NSURL(string: "https://en.wikipedia.org/wiki/Floyd_Mayweather_Jr.")!
@@ -148,17 +148,17 @@ class StartGameViewController: UIViewController {
         
         // Anything you want to exclude
         activityViewController.excludedActivityTypes = [
-            UIActivityTypePostToWeibo,
-            UIActivityTypePrint,
-            UIActivityTypeAssignToContact,
-            UIActivityTypeSaveToCameraRoll,
-            UIActivityTypeAddToReadingList,
-            UIActivityTypePostToFlickr,
-            UIActivityTypePostToVimeo,
-            UIActivityTypePostToTencentWeibo
+            UIActivityType.postToWeibo,
+            UIActivityType.print,
+            UIActivityType.assignToContact,
+            UIActivityType.saveToCameraRoll,
+            UIActivityType.addToReadingList,
+            UIActivityType.postToFlickr,
+            UIActivityType.postToVimeo,
+            UIActivityType.postToTencentWeibo
         ]
         
-        self.presentViewController(activityViewController, animated: true, completion: nil)
+        self.present(activityViewController, animated: true, completion: nil)
     }
     
     
@@ -173,7 +173,7 @@ class StartGameViewController: UIViewController {
         anim.duration = anim.settlingDuration
         anim.fromValue = self.playButton.layer.position.y - 200
         anim.toValue = self.playButton.layer.position.y
-        self.playButton.layer.addAnimation(anim, forKey: nil)
+        self.playButton.layer.add(anim, forKey: nil)
         
         let anim1 = CASpringAnimation(keyPath: "position.y")
         anim1.beginTime = CACurrentMediaTime() + 0.1
@@ -184,7 +184,7 @@ class StartGameViewController: UIViewController {
         anim1.duration = anim.settlingDuration
         anim1.fromValue = self.rateButton.layer.position.y + 200
         anim1.toValue = self.rateButton.layer.position.y
-        self.rateButton.layer.addAnimation(anim1, forKey: nil)
+        self.rateButton.layer.add(anim1, forKey: nil)
         
         let anim2 = CASpringAnimation(keyPath: "position.y")
         anim2.beginTime = CACurrentMediaTime() + 0.2
@@ -195,7 +195,7 @@ class StartGameViewController: UIViewController {
         anim2.duration = anim.settlingDuration
         anim2.fromValue = self.shareButton.layer.position.y + 200
         anim2.toValue = self.shareButton.layer.position.y
-        self.shareButton.layer.addAnimation(anim2, forKey: nil)
+        self.shareButton.layer.add(anim2, forKey: nil)
 
         let anim3 = CASpringAnimation(keyPath: "position.y")
         anim3.beginTime = CACurrentMediaTime() + 0.3
@@ -206,7 +206,7 @@ class StartGameViewController: UIViewController {
         anim3.duration = anim.settlingDuration
         anim3.fromValue = self.aboutButton.layer.position.y + 200
         anim3.toValue = self.aboutButton.layer.position.y
-        self.aboutButton.layer.addAnimation(anim3, forKey: nil)
+        self.aboutButton.layer.add(anim3, forKey: nil)
         
         let anim4 = CASpringAnimation(keyPath: "position.y")
         anim4.beginTime = CACurrentMediaTime()
@@ -217,7 +217,7 @@ class StartGameViewController: UIViewController {
         anim4.duration = anim.settlingDuration
         anim4.fromValue = self.moreGamesButton.layer.position.y + 200
         anim4.toValue = self.moreGamesButton.layer.position.y
-        self.moreGamesButton.layer.addAnimation(anim4, forKey: nil)
+        self.moreGamesButton.layer.add(anim4, forKey: nil)
         
         let anim5 = CASpringAnimation(keyPath: "position.y")
         anim5.beginTime = CACurrentMediaTime() + 0.1
@@ -228,7 +228,7 @@ class StartGameViewController: UIViewController {
         anim5.duration = anim.settlingDuration
         anim5.fromValue = self.transparentLabel.layer.position.y + 200
         anim5.toValue = self.transparentLabel.layer.position.y
-        self.transparentLabel.layer.addAnimation(anim5, forKey: nil)
+        self.transparentLabel.layer.add(anim5, forKey: nil)
         
         let anim6 = CASpringAnimation(keyPath: "position.y")
         anim6.beginTime = CACurrentMediaTime() + 0.2
@@ -239,7 +239,7 @@ class StartGameViewController: UIViewController {
         anim6.duration = anim.settlingDuration
         anim6.fromValue = self.muteButton.layer.position.y + 200
         anim6.toValue = self.muteButton.layer.position.y
-        self.muteButton.layer.addAnimation(anim6, forKey: nil)
+        self.muteButton.layer.add(anim6, forKey: nil)
         
 
         let anim7 = CASpringAnimation(keyPath: "position.y")
@@ -251,7 +251,7 @@ class StartGameViewController: UIViewController {
         anim7.duration = anim.settlingDuration
         anim7.fromValue = self.enButton.layer.position.y + 200
         anim7.toValue = self.enButton.layer.position.y
-        self.enButton.layer.addAnimation(anim7, forKey: nil)
+        self.enButton.layer.add(anim7, forKey: nil)
 
         let anim8 = CASpringAnimation(keyPath: "position.y")
         anim8.beginTime = CACurrentMediaTime() + 0.4
@@ -262,7 +262,7 @@ class StartGameViewController: UIViewController {
         anim8.duration = anim.settlingDuration
         anim8.fromValue = self.ruButton.layer.position.y + 200
         anim8.toValue = self.ruButton.layer.position.y
-        self.ruButton.layer.addAnimation(anim8, forKey: nil)
+        self.ruButton.layer.add(anim8, forKey: nil)
         
         let anim9 = CASpringAnimation(keyPath: "transform.scale")
         anim9.damping = 7.1
@@ -272,7 +272,7 @@ class StartGameViewController: UIViewController {
         anim9.duration = anim.settlingDuration
         anim9.fromValue = 0.1
         anim9.toValue = 1.0
-        self.fightersTriviaTitleLabel.layer.addAnimation(anim9, forKey: nil)
+        self.fightersTriviaTitleLabel.layer.add(anim9, forKey: nil)
 
 
     }
