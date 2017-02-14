@@ -37,45 +37,33 @@ class QuestionViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     @IBOutlet var signX: [UIImageView]!
     @IBOutlet weak var answerButton: UIButton!
     @IBOutlet weak var scoreLabel: UILabel!
-    
     @IBOutlet weak var congratulationsLabel: UILabel!
     @IBOutlet weak var congratStrip: UIStackView!
     //@IBOutlet weak var dotsStack: UIStackView!
-    
     
     var gradient: CAGradientLayer!
     var currentSelectedAnswer: String!
     var currentRowIndex: Int = 0
     var congratStripOpenConstraint: NSLayoutConstraint!
     var congratStripCloseConstraint: NSLayoutConstraint!
-    
     var answerStripOpenConstraint: NSLayoutConstraint!
     var answerStripCloseConstraint: NSLayoutConstraint!
-    
     var phrases: [String] = [String]()
-    
     var isBetweenQuestions: Bool = false
     var soundMute: Bool?
-    
     
     /////////////////////////// VIEW /////////////////////////////////////////////////////////////////////
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         qVController = self
-        
-        
         ///dlya togo chtobi gradient menyal orientaciyu pri izmenenii raskladki
         NotificationCenter.default.addObserver(self, selector: #selector(QuestionViewController.rotated), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
-        
-        phrases = ["Yes!", "Exactly!", "Well Done!", "Okay!", "Fine!", "Right!", "True!",]
-        
+        phrases = ["Yes!", "Exactly!", "Well Done!", "Okay!", "Fine!", "Right!", "True!"]
         ///nastroiki gradienta knopki NEXT, on statichniy
         self.answerButtonGradient()
         ///uvilichivaem razmeri freima gradienta, cveta location add vse vnutri
         self.selfBackgroundGradientLayerSetup()
-        
         theGameController.viewFighterNameLabel = fighterNameLabel
         theGameController.scoreLabel = scoreLabel
         self.congratuLationStripAndAnswerButtonsConstraintsInit()

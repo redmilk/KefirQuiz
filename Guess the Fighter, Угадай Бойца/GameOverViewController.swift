@@ -13,6 +13,7 @@ class GameOverViewController: UIViewController {
     @IBOutlet weak var scoreLabel: UILabel!
     
     @IBOutlet weak var highScoreLabel: UILabel!
+    @IBOutlet weak var gameOver: UILabel!
     
     var gradient: CAGradientLayer!
     
@@ -22,11 +23,10 @@ class GameOverViewController: UIViewController {
         ///dlya togo chtobi gradient menyal orientaciyu pri izmenenii raskladki
         NotificationCenter.default.addObserver(self, selector: #selector(QuestionViewController.rotated), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
         
-        //newHighScoreAnimation()
         
         highScoreLabel.text = theGameController.highscore.description
         scoreLabel.text = theGameController.score.description
-        
+        checkHighscoreOnGameOver()
         
         gradient = CAGradientLayer()
         gradient.colors = [UIColor.blue.cgColor, UIColor.red.cgColor]
@@ -57,8 +57,14 @@ class GameOverViewController: UIViewController {
         performSegue(withIdentifier: "showMainMenu", sender: nil)
     }
     
-    func newHighScoreAnimation() {
-        
+    func checkHighscoreOnGameOver() {
+        if theGameController.score >= theGameController.highscore {
+            self.gameOver.text = "New Highscore!"
+            theGameController.playSound("ACHIEVMENT")
+            // animation
+        } else {
+            theGameController.playSound("GAMEOVER")
+        }
     }
     
     ///dlya togo chtobi gradient menyal orientaciyu pri izmenenii raskladki

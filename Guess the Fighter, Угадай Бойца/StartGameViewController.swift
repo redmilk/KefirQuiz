@@ -38,10 +38,9 @@ class StartGameViewController: UIViewController {
         super.viewDidLoad()
         
         ///uzhe ne transparent, teper tam highscore
-        
         theGameController.soundMute = self.soundMute
 
-        self.transparentLabel.text = "    Highscore: \(theGameController.highscore)        "
+        self.transparentLabel.text = "\(theGameController.highscore)"
         
         ///dlya togo chtobi gradient menyal orientaciyu pri izmenenii raskladki
         NotificationCenter.default.addObserver(self, selector: #selector(QuestionViewController.rotated), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
@@ -81,6 +80,10 @@ class StartGameViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         gradientColorChangeAnimation()
         initialButtonAnimation()
+        // test
+        //transparentLabel.numberOfLines = 1
+        transparentLabel.minimumScaleFactor = 0.5
+        transparentLabel.adjustsFontSizeToFitWidth = true
     }
     
     override func didReceiveMemoryWarning() {

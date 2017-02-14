@@ -119,6 +119,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="gameOver" destination="cuH-lR-ECp" id="iFK-56-SJh"/>
                         <outlet property="highScoreLabel" destination="p5D-qN-uoL" id="F7g-ad-9aM"/>
                         <outlet property="scoreLabel" destination="g1J-Ca-Q6N" id="KEp-UG-EI0"/>
                     </connections>
@@ -647,7 +648,7 @@
                                                     <action selector="moreGamesButtonHandler:" destination="lYr-hl-Qp2" eventType="touchUpInside" id="wUz-69-rPe"/>
                                                 </connections>
                                             </button>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="    Highscore: 00        " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1Dt-vH-79M">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1Dt-vH-79M">
                                                 <rect key="frame" x="138" y="0.0" width="82" height="56"/>
                                                 <color key="backgroundColor" red="0.034442920237779617" green="0.017028732225298882" blue="0.045973651111125946" alpha="0.30214576198630139" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <fontDescription key="fontDescription" type="system" weight="ultraLight" pointSize="20"/>
@@ -862,6 +863,6 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="tRu-Rn-qB0"/>
-        <segue reference="k07-Kc-BSJ"/>
+        <segue reference="sR2-oi-bU4"/>
     </inferredMetricsTieBreakers>
 </document>

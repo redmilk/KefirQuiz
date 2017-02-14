@@ -11,7 +11,7 @@ import UIKit
 import AVFoundation
 import AudioToolbox
 
-var highScore: Int!
+//var highScore: Int!
 
 var theGameController: GameController!
 
@@ -24,7 +24,7 @@ class GameController {
     var currentAnswerListData: [String]!
     var currentRightAnswerIndex: Int!
     var score: Int = 0
-    var highscore: Int = 0
+    var highscore: Int
     var viewFighterNameLabel: UILabel?
     var scoreLabel: UILabel?
     var soundMute: Bool?
@@ -60,16 +60,24 @@ class GameController {
         ///esli ukazano bolshe chem nuzhno to beskonechniy cikl
         self.answerListCount = 10 //
         
+        //highscore
+        if let hs = UserDefaults.standard.value(forKey: "highscore") as? Int {
+            self.highscore = hs
+        } else {
+            self.highscore = 0
         }
-    
+    }
     ///VSE ZAVYAZANO NA INDEKSE, KOGDA EGO MENYAEM ON UPRAVLYAET IZMENENIEM OSTALNOGO
     ///kogda menyaem indeks tekushego voprosa, menyaetsya currentFighter na sootv.
     var CURRENTQUESTIONINDEX: Int {
         
         didSet {
+            ///proverka - perviy li eto vopros po poryadku
+            if self.isItFirstQuestion == true {
+                self.isItFirstQuestion = false
+                return
+            }
             qVController.refreshCurrentFighterNameLabel(self.fighters[CURRENTQUESTIONINDEX].name)
-            
-            
             /// chtob dva raza podryad ne srabativala animaciya smeni kartinki pri restarte
             /// esli restart, to obnulyaem svoistva igri i ostalnnoe propuskaem
             if self.gameIsOver == true {
@@ -82,11 +90,6 @@ class GameController {
                 return
             }
             
-            ///proverka - perviy li eto vopros po poryadku
-            if self.isItFirstQuestion == true {
-                self.isItFirstQuestion = false
-            }
-            
             self.initCurrentQuestion()
             
             /// esli eto ne "propustit boica"
@@ -96,9 +99,6 @@ class GameController {
                 /// to propustit vopros, igrok oshibsya
             } else if (self.skipFighter == true) {
                 self.playerWasWrongSkipThisQuestion()
-            }
-            
-            if self.skipFighter == true {
                 self.skipFighter = false
             }
         }
@@ -130,6 +130,8 @@ class GameController {
         self.fighters.shuffle()
         self.scoreLabel!.text = score.description
         qVController.resetDots()
+        // userDefault 
+        self.highscore = UserDefaults.standard.value(forKey: "highscore") as! Int
     }
     
     /// igrok oshibsya, propustit tekushiy vopros s nebolshoi zaderzhkoi
@@ -209,7 +211,6 @@ class GameController {
             let triggerTime = (Int64(NSEC_PER_SEC) * Int64(delayToGameOverAnimation))
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(triggerTime) / Double(NSEC_PER_SEC), execute: { () -> Void in
                 ///zapomnit polozhenie gradienta i zapustit ego animaciyu s togozhe momenta posle restarta
-                self.playSound("GAMEOVER")
                 self.checkIfHighScore(self.score)
                 self.gameIsOver = true
                 qVController.congratStripConstraintsSetToClose()
@@ -316,12 +317,13 @@ class GameController {
     func checkIfHighScore(_ yourScore: Int) -> Bool {
         var r: Bool = false
         if yourScore > self.highscore {
-            self.highscore = yourScore
             print("NEW HIGHSCORE")
+            self.highscore = yourScore
+            UserDefaults.standard.set(self.highscore, forKey: "highscore")
             r = true
         }
         if yourScore == self.highscore {
-            /// Uteshit igroka potomu chto emu ne hvatilo vsego 1 ochka do highscore ::)
+            /// Uteshit igroka potomu chto emu ne hvatilo vsego 1 ochka do highscore :)
         }
         return r
     }
@@ -339,7 +341,6 @@ class GameController {
         qVController.resetDots()
         qVController.reloadPickerView()
         qVController.refreshCurrentFighterNameLabel("? ? ? ? ?")
-        
         CURRENTQUESTIONINDEX = 0
         //qVController.pickerSelectMiddleOption()
     }

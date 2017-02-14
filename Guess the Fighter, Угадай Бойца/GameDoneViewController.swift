@@ -30,6 +30,9 @@ class GameDoneViewController: UIViewController {
         
         self.view.layer.addSublayer(gradient)
         // Do any additional setup after loading the view.
+        
+        let foo = theGameController.checkIfHighScore(theGameController.score)
+        print(foo)
     }
 
     override func didReceiveMemoryWarning() {
